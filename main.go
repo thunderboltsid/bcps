@@ -1,5 +1,13 @@
 package main
 
+import (
+	"log"
+
+	"github.com/thunderboltsid/bcps/cmd"
+)
+
 func main() {
-	return
+	if err := cmd.Execute(); err != nil {
+		log.Fatal(err)
+	}
 }
