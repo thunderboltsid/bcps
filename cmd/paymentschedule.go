@@ -31,12 +31,13 @@ func thresholdValue(year int) float64 {
 // cpiRates returns the map of CPI rates from 2019 to given year. The historical CPI rates are hardcoded. The future
 // rates are filled in with the expectedCPIIncreasePercentage.
 func cpiRates(year int) map[int]float64 {
+	// Historical CPI rates from https://www-genesis.destatis.de/genesis/online?operation=abruftabelleBearbeiten&levelindex=1&levelid=1712007485333&auswahloperation=abruftabelleAuspraegungAuswaehlen&auswahlverzeichnis=ordnungsstruktur&auswahlziel=werteabruf&code=61111-0001&auswahltext=&werteabruf=Value+retrieval#abreadcrumb
 	cpir := map[int]float64{
-		2019: 1.8,
-		2020: 1.4,
-		2021: 1.4,
-		2022: 1.4,
-		2023: 1.4,
+		2019: 1.4,
+		2020: 0.5,
+		2021: 3.1,
+		2022: 6.9,
+		2023: 5.9,
 	}
 
 	for i := 2024; i <= year; i++ {
