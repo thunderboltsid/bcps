@@ -21,6 +21,7 @@ var (
 type Styles struct {
 	Base,
 	HeaderText,
+	TableText,
 	Status,
 	StatusHeader,
 	Highlight,
@@ -35,6 +36,9 @@ func NewStyles(lg *lipgloss.Renderer) *Styles {
 	s.HeaderText = lg.NewStyle().
 		Foreground(indigo).
 		Bold(true).
+		Padding(0, 1, 0, 2)
+	s.TableText = lg.NewStyle().
+		Foreground(green).
 		Padding(0, 1, 0, 2)
 	s.Status = lg.NewStyle().
 		Border(lipgloss.RoundedBorder()).
@@ -207,13 +211,11 @@ func (m Model) View() string {
 	switch m.form.State {
 	case huh.StateCompleted:
 		var b strings.Builder
-		printVariables(&b)
+		fmt.Fprintf(&b, "\n🧠🤑 Income Sharing Agreement\n\n")
 
-		title := s.Highlight.Render("Here's your predicted payment schedule:")
-		fmt.Fprintf(&b, "\n🧠🤑 Income Sharing Agreement\n%s\n\n", title)
-		paymentSchedule(&b)
+		paymentSchedule(&b, s)
 
-		return s.Status.Copy().Margin(0, 1).Padding(1, 2).Width(48).Render(b.String()) + "\n\n"
+		return s.Status.Copy().Margin(0, 1).Padding(1, 2).Width(80).Render(b.String()) + "\n\n"
 	default:
 		setFormValues(m)
 
@@ -249,7 +251,7 @@ func (m Model) appBoundaryView(text string) string {
 		m.width,
 		lipgloss.Left,
 		m.styles.HeaderText.Render(text),
-		lipgloss.WithWhitespaceChars("/"),
+		lipgloss.WithWhitespaceChars(""),
 		lipgloss.WithWhitespaceForeground(indigo),
 	)
 }
@@ -259,7 +261,7 @@ func (m Model) appErrorBoundaryView(text string) string {
 		m.width,
 		lipgloss.Left,
 		m.styles.ErrorHeaderText.Render(text),
-		lipgloss.WithWhitespaceChars("/"),
+		lipgloss.WithWhitespaceChars(""),
 		lipgloss.WithWhitespaceForeground(red),
 	)
 }

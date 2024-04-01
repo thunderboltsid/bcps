@@ -63,34 +63,69 @@ func repayment(year int) float64 {
 }
 
 // paymentSchedule prints the payment schedule for the given year range to a io.Writer.
-func paymentSchedule(w io.Writer) {
+func paymentSchedule(w io.Writer, styles *Styles) {
+	title := styles.Highlight.Render("📊 Here's your payment schedule")
+	headerYear := styles.HeaderText.Render("📅 Year")
+	headerSalary := styles.HeaderText.Render("💶 Salary")
+	headerRepayment := styles.HeaderText.Render("💸 Repayment")
+	headerThreshold := styles.HeaderText.Render("💰 Threshold Sum")
+	fmt.Fprintf(w, "%s\n\n", title)
+	fmt.Fprintf(w, "%s%s%s%s\n\n", headerYear, headerSalary, headerRepayment, headerThreshold)
+
 	totalRepaid := 0.0
-	fmt.Fprintf(w, "Year\tSalary\tRepayment\tThreshold\n")
+	totalYears := 0
+	finalYear := repaymentStartYear + repaymentYears
 	for i := repaymentStartYear; i <= repaymentStartYear+repaymentYears; i++ {
+		totalYears += 1
 		repaid := repayment(i)
 		totalRepaid += repaid
+
+		valueYear := styles.TableText.Render(fmt.Sprintf("%d", i))
+		valueSalary := styles.TableText.Render(fmt.Sprintf("%.2f", salary(i)))
+		valueRepayment := styles.TableText.Render(fmt.Sprintf("%.2f", repayment(i)))
+		valueThreshold := styles.TableText.Render(fmt.Sprintf("%.2f", thresholdValue(i)))
 		if totalRepaid > thresholdValue(i) {
+			finalYear = i
 			delta := totalRepaid - thresholdValue(i)
 			totalRepaid = thresholdValue(i)
 
-			fmt.Fprintf(w, "%d\t%.2f\t%.2f\t%.2f\n", i, salary(i), repaid-delta, thresholdValue(i))
+			valueRepayment = styles.TableText.Render(fmt.Sprintf("%.2f", repaid-delta))
+			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", valueYear, valueSalary, valueRepayment, valueThreshold)
 			break
 		}
-		fmt.Fprintf(w, "%d\t%.2f\t%.2f\t%.2f\n", i, salary(i), repayment(i), thresholdValue(i))
+
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", valueYear, valueSalary, valueRepayment, valueThreshold)
 	}
-	fmt.Fprintf(w, "\nTotal repaid: %.2f\n", totalRepaid)
+
+	totalRepaidStr := styles.Highlight.Render("Total repaid:")
+	fmt.Fprintf(w, "\n%s %.2f\n", totalRepaidStr, totalRepaid)
+
 	repaidFraction := totalRepaid / borrowedSum
-	fmt.Fprintf(w, "Multiples of borrowed sum repaid: %.2f\n", repaidFraction)
+	multiplesOfBorrowedSumStr := styles.Highlight.Render("Multiples of borrowed sum repaid:")
+	fmt.Fprintf(w, "%s %.2f\n", multiplesOfBorrowedSumStr, repaidFraction)
+
+	equivalentToLoanStr := styles.Highlight.Render("Equivalent to a education loan with interest rate of")
+	fmt.Fprintf(w, "%s %.2f%%", equivalentToLoanStr, equivalentLoanInterestRate(finalYear, totalYears)*100)
 }
 
 func printVariables(w io.Writer) {
-	fmt.Fprintf(w, "Here are the values you entered:\n")
-	fmt.Fprintf(w, "Borrowed sum: %.2f\n", borrowedSum)
-	fmt.Fprintf(w, "Borrowed year: %d\n", borrowedYear)
-	fmt.Fprintf(w, "Repayment start year: %d\n", repaymentStartYear)
-	fmt.Fprintf(w, "Sharing percentage: %.2f\n", sharingPercentage)
-	fmt.Fprintf(w, "Starting salary: %.2f\n", startingSalary)
-	fmt.Fprintf(w, "Expected salary increase percentage: %.2f\n", expectedSalaryIncreasePercentage)
-	fmt.Fprintf(w, "Expected CPI increase percentage: %.2f\n", expectedCPIIncreasePercentage)
-	fmt.Fprintf(w, "Repayment years: %d\n", repaymentYears)
+	fmt.Fprintf(w, "\tBorrowed sum: %.2f\n", borrowedSum)
+	fmt.Fprintf(w, "\tBorrowed year: %d\n", borrowedYear)
+	fmt.Fprintf(w, "\tRepayment start year: %d\n", repaymentStartYear)
+	fmt.Fprintf(w, "\tSharing percentage: %.2f\n", sharingPercentage)
+	fmt.Fprintf(w, "\tStarting salary: %.2f\n", startingSalary)
+	fmt.Fprintf(w, "\tExpected salary increase percentage: %.2f\n", expectedSalaryIncreasePercentage)
+	fmt.Fprintf(w, "\tExpected CPI increase percentage: %.2f\n", expectedCPIIncreasePercentage)
+	fmt.Fprintf(w, "\tRepayment years: %d\n", repaymentYears)
+}
+
+func equivalentLoanInterestRate(finalYear int, totalYears int) float64 {
+	finalPaid := thresholdValue(finalYear)
+	interest := finalPaid - borrowedSum
+	years := float64(totalYears)
+	if interest == 0 {
+		return 0.0
+	}
+
+	return interest / borrowedSum / years
 }
