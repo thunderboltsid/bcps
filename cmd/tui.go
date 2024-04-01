@@ -97,22 +97,50 @@ func NewModel() Model {
 			huh.NewInput().
 				Key(borrowedSumKey).
 				Title("Enter the sum you borrowed").
-				Description("This is the sum you borrowed from 🧠🤑"),
+				Description("This is the sum you borrowed from 🧠🤑").
+				Validate(func(s string) error {
+					if _, err := strconv.ParseFloat(s, 64); err != nil {
+						return fmt.Errorf("invalid number")
+					}
+
+					return nil
+				}),
 
 			huh.NewInput().
 				Key(startingSalaryKey).
 				Title("Enter the gross salary you had the year you started repaying").
-				Description("This is the the initial salary based on which the future salaries will be calculated"),
+				Description("This is the the initial salary based on which the future salaries will be calculated").
+				Validate(func(s string) error {
+					if _, err := strconv.ParseFloat(s, 64); err != nil {
+						return fmt.Errorf("invalid number")
+					}
+
+					return nil
+				}),
 
 			huh.NewInput().
 				Key(sharingPercentageKey).
 				Title("Enter the repayment rate").
-				Description("This is the percentage of your gross salary you will repay to 🧠🤑 every year"),
+				Description("This is the percentage of your gross salary you will repay to 🧠🤑 every year").
+				Validate(func(s string) error {
+					if _, err := strconv.ParseFloat(s, 64); err != nil {
+						return fmt.Errorf("invalid number")
+					}
+
+					return nil
+				}),
 
 			huh.NewInput().
 				Key(numberOfRepaymentYearsKey).
 				Title("Enter the number of years you have to repay").
-				Description("This is the number of years you have to share your income with 🧠🤑"),
+				Description("This is the number of years you have to share your income with 🧠🤑").
+				Validate(func(s string) error {
+					if _, err := strconv.Atoi(s); err != nil {
+						return fmt.Errorf("invalid number")
+					}
+
+					return nil
+				}),
 
 			huh.NewSelect[int]().
 				Key(repaymentStartYearKey).
@@ -129,12 +157,26 @@ func NewModel() Model {
 			huh.NewInput().
 				Key(expectedSalaryIncreasePercentageKey).
 				Title("Enter the expected annual salary increase percentage").
-				Description("This is the average percentage by which you expect your salary to increase every year"),
+				Description("This is the average percentage by which you expect your salary to increase every year").
+				Validate(func(s string) error {
+					if _, err := strconv.ParseFloat(s, 64); err != nil {
+						return fmt.Errorf("invalid number")
+					}
+
+					return nil
+				}),
 
 			huh.NewInput().
 				Key(expectedCPIIncreasePercentageKey).
 				Title("Enter the expected CPI rate").
-				Description("This is the average percentage by which consumer price index is expected to increase every year in the future"),
+				Description("This is the average percentage by which consumer price index is expected to increase every year in the future").
+				Validate(func(s string) error {
+					if _, err := strconv.ParseFloat(s, 64); err != nil {
+						return fmt.Errorf("invalid number")
+					}
+
+					return nil
+				}),
 
 			huh.NewConfirm().
 				Key("done").
