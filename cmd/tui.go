@@ -146,7 +146,7 @@ func NewModel() Model {
 				Key(repaymentStartYearKey).
 				Options(huh.NewOptions(allYears()...)...).
 				Title("Choose the year you started repaying").
-				Description("This will determine the threshold value calculations").
+				Description("This will be used as a starting point for the payment plan calculations").
 				Validate(func(v int) error {
 					if v < m.form.GetInt(borrowedYearKey) {
 						return fmt.Errorf("repayment start year cannot be before the borrowed year")
@@ -168,8 +168,8 @@ func NewModel() Model {
 
 			huh.NewInput().
 				Key(expectedCPIIncreasePercentageKey).
-				Title("Enter the expected CPI rate").
-				Description("This is the average percentage by which consumer price index is expected to increase every year in the future").
+				Title("Enter the average predicted CPI rate for future years").
+				Description("This is the average percentage by which consumer price index (inflation) is expected to increase every year in the future").
 				Validate(func(s string) error {
 					if _, err := strconv.ParseFloat(s, 64); err != nil {
 						return fmt.Errorf("invalid number")

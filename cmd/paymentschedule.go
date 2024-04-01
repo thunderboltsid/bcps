@@ -32,15 +32,18 @@ func thresholdValue(year int) float64 {
 // rates are filled in with the expectedCPIIncreasePercentage.
 func cpiRates(year int) map[int]float64 {
 	// Historical CPI rates from https://www-genesis.destatis.de/genesis/online?operation=abruftabelleBearbeiten&levelindex=1&levelid=1712007485333&auswahloperation=abruftabelleAuspraegungAuswaehlen&auswahlverzeichnis=ordnungsstruktur&auswahlziel=werteabruf&code=61111-0001&auswahltext=&werteabruf=Value+retrieval#abreadcrumb
+	// 2024 and 2025 are predictions from https://economy-finance.ec.europa.eu/economic-surveillance-eu-economies/germany/economic-forecast-germany_en
 	cpir := map[int]float64{
 		2019: 1.4,
 		2020: 0.5,
 		2021: 3.1,
 		2022: 6.9,
 		2023: 5.9,
+		2024: 2.8,
+		2025: 2.4,
 	}
 
-	for i := 2024; i <= year; i++ {
+	for i := 2026; i <= year; i++ {
 		cpir[i] = expectedCPIIncreasePercentage
 	}
 
@@ -106,17 +109,6 @@ func paymentSchedule(w io.Writer, styles *Styles) {
 
 	equivalentToLoanStr := styles.Highlight.Render("Equivalent to a education loan with interest rate of")
 	fmt.Fprintf(w, "%s %.2f%%", equivalentToLoanStr, equivalentLoanInterestRate(finalYear, totalYears)*100)
-}
-
-func printVariables(w io.Writer) {
-	fmt.Fprintf(w, "\tBorrowed sum: %.2f\n", borrowedSum)
-	fmt.Fprintf(w, "\tBorrowed year: %d\n", borrowedYear)
-	fmt.Fprintf(w, "\tRepayment start year: %d\n", repaymentStartYear)
-	fmt.Fprintf(w, "\tSharing percentage: %.2f\n", sharingPercentage)
-	fmt.Fprintf(w, "\tStarting salary: %.2f\n", startingSalary)
-	fmt.Fprintf(w, "\tExpected salary increase percentage: %.2f\n", expectedSalaryIncreasePercentage)
-	fmt.Fprintf(w, "\tExpected CPI increase percentage: %.2f\n", expectedCPIIncreasePercentage)
-	fmt.Fprintf(w, "\tRepayment years: %d\n", repaymentYears)
 }
 
 func equivalentLoanInterestRate(finalYear int, totalYears int) float64 {
