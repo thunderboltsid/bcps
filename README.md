@@ -5,7 +5,7 @@ An interactive CLI for predicting approximate payment schedules for 🧠 🤑 In
 ### 🚀 Getting Started
 Pre-requisites:
 - devbox: Run `./install_devbox.sh` to install the necessary dependencies
-- direnv: Follow the instructions [here](https://direnv.net/docs/installation.html) to install direnv
+- direnv: Follow the instructions [here](https://direnv.net/docs/installation.html) to install direnv and add `eval "$(direnv hook zsh)"` to your .zshrc (changes depending on shell)
 
 Steps to setup:
 1. Clone the repository
