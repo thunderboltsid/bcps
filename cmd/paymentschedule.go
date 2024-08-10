@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"math"
 )
 
 var (
@@ -113,13 +114,30 @@ func paymentSchedule(w io.Writer, styles *Styles) {
 	fmt.Fprintf(w, "%s %.2f%%", equivalentToLoanStr, equivalentLoanInterestRate(finalYear, totalYears)*100)
 }
 
+// newtonRaphson implements the Newton-Raphson method to find the equivalent interest rate
+func newtonRaphson(totalPaid, principal float64, years int) float64 {
+	const epsilon = 1e-7
+	const maxIterations = 100
+
+	r := 0.1 // Initial guess
+	for i := 0; i < maxIterations; i++ {
+		f := principal*math.Pow(1+r, float64(years)) - totalPaid
+		fPrime := float64(years) * principal * math.Pow(1+r, float64(years)-1)
+
+		rNew := r - f/fPrime
+		if math.Abs(rNew-r) < epsilon {
+			return rNew
+		}
+		r = rNew
+	}
+	return r // Return best approximation if max iterations reached
+}
+
 func equivalentLoanInterestRate(finalYear int, totalYears int) float64 {
 	finalPaid := thresholdValue(finalYear)
-	interest := finalPaid - borrowedSum
-	years := float64(totalYears)
-	if interest == 0 {
+	if finalPaid <= borrowedSum {
 		return 0.0
 	}
 
-	return interest / borrowedSum / years
+	return newtonRaphson(finalPaid, borrowedSum, totalYears)
 }
