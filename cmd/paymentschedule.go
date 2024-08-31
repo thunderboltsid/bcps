@@ -33,16 +33,15 @@ func thresholdValue(year int) float64 {
 // rates are filled in with the expectedCPIIncreasePercentage.
 func cpiRates(year int) map[int]float64 {
 	// Historical CPI rates from https://www-genesis.destatis.de/genesis/online?operation=abruftabelleBearbeiten&levelindex=1&levelid=1712007485333&auswahloperation=abruftabelleAuspraegungAuswaehlen&auswahlverzeichnis=ordnungsstruktur&auswahlziel=werteabruf&code=61111-0001&auswahltext=&werteabruf=Value+retrieval#abreadcrumb
-	// 2024 and 2025 are predictions from https://economy-finance.ec.europa.eu/economic-surveillance-eu-economies/germany/economic-forecast-germany_en
-	// 2026 is a prediction from https://www.bundesbank.de/en/press/press-releases/bundesbank-s-forecast-for-germany-falling-inflation-but-not-yet-time-to-sound-the-all-clear-920344
+	// 2024, 2025, and 2026 are a prediction from https://www.bundesbank.de/en/press/press-releases/bundesbank-forecast-for-germany-german-economy-slowly-regaining-its-footing-933658
 	cpir := map[int]float64{
 		2019: 1.4,
 		2020: 0.5,
 		2021: 3.1,
 		2022: 6.9,
-		2023: 5.9,
+		2023: 6.0,
 		2024: 2.8,
-		2025: 2.4,
+		2025: 2.7,
 		2026: 2.2,
 	}
 
